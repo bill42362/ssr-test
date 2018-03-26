@@ -1,0 +1,26 @@
+{
+  "name": "ssr-test",
+  "version": "0.1.0",
+  "description": "Test stack of server side rendering.",
+  "main": "dist/server/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bill42362/ssr-test.git"
+  },
+  "keywords": [
+    "react",
+    "redux",
+    "react-router",
+    "server-side-rendering",
+    "webpack"
+  ],
+  "author": "Pi-Yin Hsiao",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bill42362/ssr-test/issues"
+  },
+  "homepage": "https://github.com/bill42362/ssr-test#readme"
+}
