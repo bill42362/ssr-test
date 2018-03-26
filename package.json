@@ -42,5 +42,16 @@
     "style-loader": "^0.20.3",
     "webpack": "^4.2.0",
     "webpack-hot-middleware": "^2.21.2"
+  },
+  "dependencies": {
+    "debug": "^3.1.0",
+    "express": "^4.16.3",
+    "isomorphic-fetch": "^2.2.1",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-redux": "^5.0.7",
+    "react-router": "^4.2.0",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0"
   }
 }
