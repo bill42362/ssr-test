@@ -1,7 +1,7 @@
 // SubNavContent.jsx
 'use strict';
 import React from 'react';
-import { Switch, Route, Link } from 'react-router-dom';
+import { Switch, Route, Link, Redirect } from 'react-router-dom';
 import '../../css/sub-nav-content.less';
 
 const subNavLinks = [
@@ -22,6 +22,7 @@ export const SubNavContent = (props) => (
       </ul>
     </nav>
     <Switch>
+      <Route path='/subNavContent' exact render={() => <Redirect to={`/subNavContent/${subNavLinks[0].key}`} />}/>
       {subNavLinks.map(subNavLink => (
         <Route path={`/subNavContent/${subNavLink.key}`} key={subNavLink.key} render={props => (
           <div className='sub-nav-content-body'>
