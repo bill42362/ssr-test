@@ -17,12 +17,14 @@ export const App = (props) => (
         <li><Link to='/subNavContent'>SubNavContent</Link></li>
       </ul>
     </nav>
-    <Switch>
-      <Route path='/' exact render={Home} />
-      <Route path='/mainContent1' render={props => (<MainContent data={1} />)} />
-      <Route path='/mainContent2' render={props => (<MainContent data={2} />)} />
-      <Route path='/subNavContent' render={props => (<SubNavContent />)} />
-    </Switch>
+    <div className='app-body'>
+      <Switch>
+        <Route path='/' exact render={Home} />
+        <Route path='/mainContent1' render={props => (<MainContent data={1} />)} />
+        <Route path='/mainContent2' render={props => (<MainContent data={2} />)} />
+        <Route path='/subNavContent' render={props => (<SubNavContent />)} />
+      </Switch>
+    </div>
   </div>
 );
 

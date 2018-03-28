@@ -16,7 +16,7 @@ export const SubNavContent = (props) => (
       <ul>
         {subNavLinks.map(subNavLink => (
           <li key={subNavLink.key}>
-            <Link to={`/subNavContent/${subNavLink.key}`}>SubNavLinkDisplay: {subNavLink.display}</Link>
+            <Link to={`/subNavContent/${subNavLink.key}`}>{subNavLink.display}</Link>
           </li>
         ))}
       </ul>

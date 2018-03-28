@@ -40,5 +40,6 @@ expressStaticRoutes.forEach(function(route) {
   app.use(route.path, Express.static(__dirname + route.serverPath));
 });
 app.get('/', (req, res) => { res.send(renderApp); })
+app.get('/:nav', (req, res) => { res.send(renderApp); })
 app.get('/:nav/:subNav', (req, res) => { res.send(renderApp); })
 app.listen(WEB_PORT, () => { console.log('Listening on port', WEB_PORT, '...'); });
