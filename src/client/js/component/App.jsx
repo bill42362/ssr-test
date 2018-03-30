@@ -1,6 +1,7 @@
 // App.jsx
 'use strict';
 import React from 'react';
+import { hot } from 'react-hot-loader';
 import { Switch, Route, Link } from 'react-router-dom';
 import Home from './Home.jsx';
 import MainContent from './MainContent.jsx';
@@ -28,4 +29,4 @@ export const App = (props) => (
   </div>
 );
 
-export default App;
+export default hot(module)(App);

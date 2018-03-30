@@ -6,7 +6,8 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './component/App.jsx';
 import '../css/index.less';
 
-ReactDOM.render(
+const render = process.env.SERVER_SIDE_RENDERING ? ReactDOM.hydrate : ReactDOM.render;
+render(
   <BrowserRouter>
     <App />
   </BrowserRouter>,
