@@ -2,6 +2,8 @@
 'use strict';
 import Express from 'express';
 import EnvConfig from '../../config.json';
+import renderHtml from './renderHtml.js';
+import { compiler } from './ServerSideRendering.js';
 
 const nodeEnv = process.env.NODE_ENV || EnvConfig.NODE_ENV || 'develop';
 const isProd = nodeEnv === 'production';
@@ -12,22 +14,6 @@ const expressStaticRoutes = [
   {path: `${staticPath}/css/`, serverPath: '/../client/css'},
   {path: `${staticPath}/js/`, serverPath: '/../client/js'},
 ];
-const renderApp = `
-  <!doctype html>
-  <html>
-    <head>
-      <meta name="viewport" content="width=device-width">
-      <meta name="viewport" content="initial-scale=1.0">
-      <title>announce-backstage</title>
-
-      ${isProd ? `<link rel="stylesheet" href="${staticPath}/css/bundle.css"/>` : ''}
-    </head>
-    <body>
-      <div id="app-root"></div>
-      <script type="text/javascript" src="${staticPath}/js/bundle.js" ></script>
-    </body>
-  </html>
-`;
 const app = Express();
 
 if(!isProd) {
@@ -39,7 +25,31 @@ if(!isProd) {
 expressStaticRoutes.forEach(function(route) {
   app.use(route.path, Express.static(__dirname + route.serverPath));
 });
-app.get('/', (req, res) => { res.send(renderApp); })
-app.get('/:nav', (req, res) => { res.send(renderApp); })
-app.get('/:nav/:subNav', (req, res) => { res.send(renderApp); })
-app.listen(WEB_PORT, () => { console.log('Listening on port', WEB_PORT, '...'); });
+
+if(EnvConfig.SERVER_SIDE_RENDERING) {
+  compiler.compile()
+    .then(renderApp => {
+      const handler = (request, response) => {
+        const context = {};
+        const app = renderApp({ request, response, context });
+        if(context.url) {
+          response.writeHead(301, {Location: context.url});
+          response.end();
+        } else {
+          response.send(renderHtml({ request, response, app }));
+        }
+      };
+      app.get('/', handler);
+      app.get('/:nav', handler);
+      app.get('/:nav/:subNav', handler);
+      app.listen(WEB_PORT, () => { console.log('Listening on port', WEB_PORT, '...'); });
+    })
+} else {
+  const handler = (request, response) => {
+    response.send(renderHtml({ request, response }));
+  };
+  app.get('/', handler);
+  app.get('/:nav', handler);
+  app.get('/:nav/:subNav', handler);
+  app.listen(WEB_PORT, () => { console.log('Listening on port', WEB_PORT, '...'); });
+}

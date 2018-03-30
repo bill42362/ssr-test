@@ -4,8 +4,8 @@ import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import EnvConfig from './config.json';
 
-const isProd = process.env.NODE_ENV === 'production';
 const nodeEnv = process.env.NODE_ENV || EnvConfig.NODE_ENV || 'develop';
+const isProd = nodeEnv === 'production';
 const plugins = [
   new webpack.EnvironmentPlugin(Object.assign({}, EnvConfig, {NODE_ENV: nodeEnv})),
 ];
@@ -29,14 +29,17 @@ export const hmrConfig = {
 const hotMiddlewareScript
   = `webpack-hot-middleware/client?path=${hmrConfig.path}&timeout=${hmrConfig.timeout}&reload=${hmrConfig.reload}`;
 
+const bundleSources = ['babel-polyfill', './src/client/js'];
+const devBundleSources = [hotMiddlewareScript];
+
 export default {
   entry: {
-    bundle: ['babel-polyfill', './src/client/js', hotMiddlewareScript],
+    bundle: isProd ? bundleSources : [ ...bundleSources, ...devBundleSources ],
   },
   output: {
     filename: 'js/[name].js',
     path: `${__dirname}/dist/client/`,
-    publicPath: EnvConfig.STATIC_PATH,
+    publicPath: EnvConfig.STATIC_PATH || '/',
   },
   module: {
     rules: [
