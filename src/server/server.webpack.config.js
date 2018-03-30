@@ -21,8 +21,8 @@ export default {
   entry: `${__dirname}/renderApp.js`,
   output: {
     filename: 'renderApp.js',
-    path: `${__dirname}/dist/server/`,
-    publicPath: EnvConfig.STATIC_PATH,
+    path: '/dist/server',
+    publicPath: EnvConfig.STATIC_PATH || '/',
     library: 'renderApp',
     libraryTarget: 'commonjs2',
   },
