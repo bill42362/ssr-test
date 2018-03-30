@@ -45,8 +45,13 @@ export default {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        use: 'babel-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
+        use: [{
+          loader: 'babel-loader',
+          options: {
+            plugins: ['react-hot-loader/babel'],
+          },
+        }],
       },
       {
         test: /\.less$/,
@@ -82,29 +87,26 @@ export default {
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
         use: [
-          { loader: 'file-loader', options: {
-          limit: 1024,
-          name: 'img/[name].[ext]',
-        }, },
-        { loader: 'img-loader', options: {
-          enabled: isProd,
-          gifsicle: { interlaced: false },
-          mozjpeg: {
-            progressive: true,
-            arithmetic: false
+          {
+            loader: 'file-loader',
+            options: { limit: 1024, name: 'img/[name].[ext]', },
           },
-          optipng: false, // disabled 
-          pngquant: {
-            floyd: 0.5,
-            speed: 2
+          {
+            loader: 'img-loader',
+            options: {
+              enabled: isProd,
+              gifsicle: { interlaced: false },
+              mozjpeg: { progressive: true, arithmetic: false },
+              optipng: false, // disabled 
+              pngquant: { floyd: 0.5, speed: 2 },
+              svgo: {
+                plugins: [
+                  { removeTitle: true },
+                  { convertPathData: false }
+                ]
+              }
+            },
           },
-          svgo: {
-            plugins: [
-              { removeTitle: true },
-              { convertPathData: false }
-            ]
-          }
-        }, },
         ]
       }
     ]
