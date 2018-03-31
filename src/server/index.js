@@ -3,7 +3,7 @@
 import Express from 'express';
 import EnvConfig from '../../config.json';
 import renderHtml from './renderHtml.js';
-import { compiler } from './ServerSideRendering.js';
+import { createReduxStore, compiler } from './ServerSideRendering.js';
 
 const nodeEnv = process.env.NODE_ENV || EnvConfig.NODE_ENV || 'develop';
 const isProd = nodeEnv === 'production';
@@ -31,13 +31,16 @@ if(EnvConfig.SERVER_SIDE_RENDERING) {
     .then(renderApp => {
       const handler = (request, response) => {
         const context = {};
-        const app = renderApp({ request, response, context });
-        if(context.url) {
-          response.writeHead(301, {Location: context.url});
-          response.end();
-        } else {
-          response.send(renderHtml({ request, response, app }));
-        }
+        createReduxStore({ request, response })
+          .then(store => {
+            const app = renderApp({ request, response, store, context });
+            if(context.url) {
+              response.writeHead(301, {Location: context.url});
+              response.end();
+            } else {
+              response.send(renderHtml({ request, response, app }));
+            }
+          });
       };
       app.get('/', handler);
       app.get('/:nav', handler);

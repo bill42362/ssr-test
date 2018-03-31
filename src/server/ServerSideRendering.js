@@ -1,11 +1,19 @@
 // ServerSideRendering.js
 'use strict';
+import { createStore } from 'redux';
 import path from 'path';
 import webpack from 'webpack';
 import MemoryFS from 'memory-fs';
 import requireFromString from 'require-from-string';
-import renderHtml from './renderHtml.js';
 import webpackConfig from './server.webpack.config.js';
+import reducer from '../client/js/reducer/reducer.js';
+
+export const createReduxStore = ({ request, response }) => {
+  return new Promise((resolve, reject) => {
+    const store = createStore(reducer);
+    resolve(store);
+  });
+};
 
 const outputErrors = (err, stats) => {
   if(err) {
@@ -35,4 +43,4 @@ export const compiler = {
   })
 };
 
-export default compiler;
+export default { createReduxStore, compiler };
