@@ -1,10 +1,10 @@
 // reducer.js
 'use strict';
 import { combineReducers } from 'redux';
-import Counter from './counter.js';
+import Counter from './Counter.js';
 
 export const reducer = combineReducers({
-  Counter,
+  counter: Counter,
 });
 
 export default reducer;

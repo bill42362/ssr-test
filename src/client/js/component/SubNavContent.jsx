@@ -2,34 +2,29 @@
 'use strict';
 import React from 'react';
 import { Switch, Route, Link, Redirect } from 'react-router-dom';
+import Counter from '../container/Counter.js';
 import '../../css/sub-nav-content.less';
-
-const subNavLinks = [
-  {key: 'aa', display: 'aa-display'},
-  {key: 'bb', display: 'bb-display'},
-  {key: 'cc', display: 'cc-display'},
-];
 
 export const SubNavContent = (props) => (
   <div className='sub-nav-content'>
     <nav className='sub-nav'>
       <ul>
-        {subNavLinks.map(subNavLink => (
-          <li key={subNavLink.key}>
-            <Link to={`/subNavContent/${subNavLink.key}`}>{subNavLink.display}</Link>
-          </li>
-        ))}
+        <li><Link to={'/subNavContent/counter'}>counter</Link></li>
+        <li><Link to={'/subNavContent/bb'}>bb</Link></li>
       </ul>
     </nav>
     <Switch>
-      <Route path='/subNavContent' exact render={() => <Redirect to={`/subNavContent/${subNavLinks[0].key}`} />}/>
-      {subNavLinks.map(subNavLink => (
-        <Route path={`/subNavContent/${subNavLink.key}`} key={subNavLink.key} render={props => (
-          <div className='sub-nav-content-body'>
-            SubNavContentBody display: {subNavLink.display}
-          </div>
-        )}/>
-      ))}
+      <Route path='/subNavContent' exact render={() => <Redirect to={'/subNavContent/counter'} />}/>
+      <Route path={`/subNavContent/counter`} render={props => (
+        <div className='sub-nav-content-body'>
+          <Counter />
+        </div>
+      )}/>
+      <Route path={`/subNavContent/bb`} render={props => (
+        <div className='sub-nav-content-body'>
+          bb
+        </div>
+      )}/>
     </Switch>
   </div>
 );
