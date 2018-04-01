@@ -18,12 +18,14 @@ const plugins = [
 export default {
   target: 'node',
   externals: [NodeExternals()],
-  entry: `${__dirname}/renderApp.js`,
+  entry: {
+    renderApp: `${__dirname}/renderApp.js`,
+    createInitialStore: `${__dirname}/../../src/client/js/createInitialStore.js`,
+  },
   output: {
-    filename: 'renderApp.js',
+    filename: '[name].js',
     path: '/dist/server',
     publicPath: EnvConfig.STATIC_PATH || '/',
-    library: 'renderApp',
     libraryTarget: 'commonjs2',
   },
   module: {
@@ -67,7 +69,6 @@ export default {
   },
   mode: isProd ? 'production' : 'development',
   plugins: plugins,
-  devtool: isProd ? false : 'source-map',
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {

@@ -1,9 +1,10 @@
 // index.js
 'use strict';
 import Express from 'express';
+import CookieParser from 'cookie-parser';
 import EnvConfig from '../../config.json';
 import renderHtml from './renderHtml.js';
-import { createReduxStore, compiler } from './ServerSideRendering.js';
+import { compiler } from './ServerSideRendering.js';
 
 const nodeEnv = process.env.NODE_ENV || EnvConfig.NODE_ENV || 'develop';
 const isProd = nodeEnv === 'production';
@@ -15,6 +16,7 @@ const expressStaticRoutes = [
   {path: `${staticPath}/js/`, serverPath: '/../client/js'},
 ];
 const app = Express();
+app.use(CookieParser());
 
 if(!isProd) {
   const hotReloader = require('./hot-reloader.js');
@@ -28,10 +30,10 @@ expressStaticRoutes.forEach(function(route) {
 
 if(EnvConfig.SERVER_SIDE_RENDERING) {
   compiler.compile()
-    .then(renderApp => {
+    .then(({ renderApp, createInitialStore }) => {
       const handler = (request, response) => {
         const context = {};
-        createReduxStore({ request, response })
+        createInitialStore(request)
           .then(store => {
             const app = renderApp({ request, response, store, context });
             if(context.url) {
@@ -45,6 +47,7 @@ if(EnvConfig.SERVER_SIDE_RENDERING) {
       app.get('/', handler);
       app.get('/:nav', handler);
       app.get('/:nav/:subNav', handler);
+      app.get('/:nav/:subNav/:count', handler);
       app.listen(WEB_PORT, () => { console.log('Listening on port', WEB_PORT, '...'); });
     })
 } else {
