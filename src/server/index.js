@@ -40,7 +40,8 @@ if(EnvConfig.SERVER_SIDE_RENDERING) {
               response.writeHead(301, {Location: context.url});
               response.end();
             } else {
-              response.send(renderHtml({ request, response, app }));
+              const preloadedState = store.getState();
+              response.send(renderHtml({ request, response, app, preloadedState }));
             }
           });
       };

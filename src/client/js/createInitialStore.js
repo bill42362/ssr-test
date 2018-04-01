@@ -25,7 +25,7 @@ const filterObject = object => {
   }, {});
 };
 
-export const createInitialStore = ({ params, query, cookies }) => {
+export const createInitialStore = ({ params = {}, query = {}, cookies = {} }) => {
   const safeParams = filterObject(params);
   const safeQuery = filterObject(query);
   const safeCookies = filterObject(cookies);
