@@ -1,6 +1,7 @@
 // index.js
 'use strict';
 import Express from 'express';
+import CookieParser from 'cookie-parser';
 import EnvConfig from '../../config.json';
 import renderHtml from './renderHtml.js';
 import { compiler } from './ServerSideRendering.js';
@@ -15,6 +16,7 @@ const expressStaticRoutes = [
   {path: `${staticPath}/js/`, serverPath: '/../client/js'},
 ];
 const app = Express();
+app.use(CookieParser());
 
 if(!isProd) {
   const hotReloader = require('./hot-reloader.js');
@@ -28,20 +30,25 @@ expressStaticRoutes.forEach(function(route) {
 
 if(EnvConfig.SERVER_SIDE_RENDERING) {
   compiler.compile()
-    .then(renderApp => {
+    .then(({ renderApp, createInitialStore }) => {
       const handler = (request, response) => {
         const context = {};
-        const app = renderApp({ request, response, context });
-        if(context.url) {
-          response.writeHead(301, {Location: context.url});
-          response.end();
-        } else {
-          response.send(renderHtml({ request, response, app }));
-        }
+        createInitialStore(request)
+          .then(store => {
+            const app = renderApp({ request, response, store, context });
+            if(context.url) {
+              response.writeHead(301, {Location: context.url});
+              response.end();
+            } else {
+              const preloadedState = store.getState();
+              response.send(renderHtml({ request, response, app, preloadedState }));
+            }
+          });
       };
       app.get('/', handler);
       app.get('/:nav', handler);
       app.get('/:nav/:subNav', handler);
+      app.get('/:nav/:subNav/:count', handler);
       app.listen(WEB_PORT, () => { console.log('Listening on port', WEB_PORT, '...'); });
     })
 } else {

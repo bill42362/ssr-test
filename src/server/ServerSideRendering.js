@@ -4,7 +4,6 @@ import path from 'path';
 import webpack from 'webpack';
 import MemoryFS from 'memory-fs';
 import requireFromString from 'require-from-string';
-import renderHtml from './renderHtml.js';
 import webpackConfig from './server.webpack.config.js';
 
 const outputErrors = (err, stats) => {
@@ -28,11 +27,13 @@ export const compiler = {
   compile: () => new Promise((resolve, reject) => {
     webpackCompiler.run((err, stats) => {
       outputErrors(err, stats);
-      const contents = fs.readFileSync(path.resolve(webpackConfig.output.path, webpackConfig.output.filename), 'utf8');
-      const { renderApp } = requireFromString(contents, webpackConfig.output.filename);
-      resolve(renderApp);
+      const createInitialStoreContents = fs.readFileSync(path.resolve(webpackConfig.output.path, 'createInitialStore.js'), 'utf8');
+      const renderAppContents = fs.readFileSync(path.resolve(webpackConfig.output.path, 'renderApp.js'), 'utf8');
+      const { createInitialStore } = requireFromString(createInitialStoreContents);
+      const { renderApp } = requireFromString(renderAppContents);
+      resolve({ renderApp, createInitialStore });
     });
   })
 };
 
-export default compiler;
+export default { compiler };
