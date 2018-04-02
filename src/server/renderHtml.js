@@ -15,7 +15,8 @@ export const renderHtml = ({ request, response, app = '', preloadedState }) => `
       <meta name="viewport" content="initial-scale=1.0">
       <title>ssr-test</title>
 
-      ${isProd ? `<link rel="stylesheet" href="${staticPath}/css/bundle.css"/>` : ''}
+      <script type="text/javascript" src="${staticPath}/js/vendors.js" ></script>
+      ${isProd ? `<link rel="stylesheet" href="${staticPath}/css/vendors.css"/>` : ''}
     </head>
     <body>
       <div id="app-root">${app}</div>

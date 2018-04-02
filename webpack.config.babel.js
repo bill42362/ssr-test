@@ -9,11 +9,11 @@ const nodeEnv = process.env.NODE_ENV || EnvConfig.NODE_ENV || 'develop';
 const isProd = nodeEnv === 'production';
 const plugins = [
   new webpack.EnvironmentPlugin(Object.assign({}, EnvConfig, {NODE_ENV: nodeEnv})),
-  new BundleAnalyzerPlugin(),
 ];
 const devPlugins = [
   new webpack.HotModuleReplacementPlugin(),
   new webpack.NoEmitOnErrorsPlugin(),
+  new BundleAnalyzerPlugin(),
 ];
 const prodPlugins = [
   new ExtractTextPlugin({filename: 'css/[name].css', allChunks: true}),
@@ -115,6 +115,16 @@ export default {
   },
   mode: isProd ? 'production' : 'development',
   plugins: isProd ? [ ...plugins, ...prodPlugins ] : [ ...plugins, ...devPlugins ],
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        vendors: {
+          name: 'vendors',
+        },
+      },
+    },
+  },
   devtool: isProd ? false : 'source-map',
   resolve: {
     extensions: ['.js', '.jsx'],
