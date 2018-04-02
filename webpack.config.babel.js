@@ -2,16 +2,18 @@
 'use strict';
 import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import EnvConfig from './config.json';
 
 const nodeEnv = process.env.NODE_ENV || EnvConfig.NODE_ENV || 'develop';
 const isProd = nodeEnv === 'production';
 const plugins = [
   new webpack.EnvironmentPlugin(Object.assign({}, EnvConfig, {NODE_ENV: nodeEnv})),
+  new BundleAnalyzerPlugin(),
 ];
 const devPlugins = [
   new webpack.HotModuleReplacementPlugin(),
-  new webpack.NoEmitOnErrorsPlugin()
+  new webpack.NoEmitOnErrorsPlugin(),
 ];
 const prodPlugins = [
   new ExtractTextPlugin({filename: 'css/[name].css', allChunks: true}),
